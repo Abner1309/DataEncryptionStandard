@@ -126,9 +126,47 @@ int* permuted_choice_2(int* left_half_key, int* right_half_key) {
         }
     }
 
-    // Free Allocated Memory:
-    free_vector(left_half_key);
-    free_vector(right_half_key);
-
     return key_pc2;
+}
+
+int** key_schedule(int* original_key) {
+    // Memory Allocation: Sixteen Subkeys
+    int** sixteen_subkeys = (int**) malloc(sizeof(int*) * 16);
+    if (sixteen_subkeys == NULL) {
+        fprintf(stderr, "Error: Memory could not be allocated.\n");
+        exit(1);
+    }
+    for (int i = 0; i < 16; i++) {
+        sixteen_subkeys[i] = (int*) malloc(sizeof(int) * 48);
+        if (sixteen_subkeys[i] == NULL) {
+            fprintf(stderr, "Error: Memory could not be allocated.\n");
+            exit(1);
+        }
+    }
+
+    // Call Permuted Choice 1:
+    int** left_right_parts = permuted_choice_1(original_key);
+
+    // Generation of Sixteen SubKeys:
+    for (int i = 0, j = 0; i < 16; i++) {
+        if (i == 0 || i == 1 || i == 8 || i == 15) {
+            j = 1;
+        }
+        else {
+            j = 2;
+        }
+
+        // Call Circular Left Shift:
+        int* left_shift = circular_left_shift(left_right_parts[0], j);
+        int* right_shift = circular_left_shift(left_right_parts[1], j);
+        left_right_parts[0] = left_shift;
+        left_right_parts[1] = right_shift;
+
+        // Call Permuted Choice 2:
+        sixteen_subkeys[i] = permuted_choice_2(left_shift, right_shift);
+    }
+
+    free_matrix(left_right_parts, 2);
+
+    return sixteen_subkeys;
 }
