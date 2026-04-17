@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "keyschedule.h"
+#include "utilities.h"
 
 int** permuted_choice_1(int* original_key) {
     // Useful Variables:
@@ -65,36 +67,68 @@ int** permuted_choice_1(int* original_key) {
     }
 
     // Free Allocated Memory For Auxiliary Matrix:
-    for (int i = 0; i < rows; i++) {
-        free(matrix[i]);
-    }
-    free(matrix);
+    free_matrix(matrix, rows);
 
-    // Return
     return two_keys;
 }
 
-int main() {
-    char* number = malloc(sizeof(char) * 57);
-    scanf("%56s", number);
-    int* digits = (int*) malloc(56 * sizeof(int));
-    for (int i = 0; i < 56; i++) {
-        digits[i] = number[i] - '0';
+int* circular_left_shift(int* half_key, int jumps) {
+    int mem;
+    // Memory Allocation:
+    int* new_key = (int*) malloc(sizeof(int) * 28);
+    if (new_key == NULL) {
+        fprintf(stderr, "Error: Memory could not be allocated.\n");
+        exit(1);
     }
-    int **matrix = permuted_choice_1(digits);
 
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < 28; j++) {
-            printf("%d ", matrix[i][j]);
+    // Circular Left Shift
+    for (int i = 0; i < jumps; i++) {
+        mem = half_key[0];
+        for (int j = 0, k = 1; k < 28; j++, k++) {
+            new_key[j] = half_key[k];
         }
-        printf("\n\n");
+        new_key[27] = mem;
     }
 
-    for (int i = 0; i < 2; i++) {
-        free(matrix[i]);
+    // Free Allocated Memory:
+    free_vector(half_key);
+
+    return new_key;
+}
+
+int* permuted_choice_2(int* left_half_key, int* right_half_key) {
+    // Permuted Choice Index Table:
+    int auxiliary_matrix[6][8] = {
+        {14, 17, 11, 24, 1, 5, 3, 28},
+        {15, 6, 21, 10, 23, 19, 12, 4},
+        {26, 8, 16, 7, 27, 20, 13, 2},
+        {41, 52, 31, 37, 47, 55, 30, 40},
+        {51, 45, 33, 48, 44, 49, 39, 56},
+        {34, 53, 46, 42, 50, 36, 29, 32}
+    };
+
+    // Memory Allocation:
+    int* key_pc2 = (int*) malloc(sizeof(int) * 48);
+    if (key_pc2 == NULL) {
+        fprintf(stderr, "Error: Memory could not be allocated.\n");
+        exit(1);
     }
-    free(matrix);
-    free(digits);
-    free(number);
-    return 0;
+
+    // Concatenation of the Left and Right:
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (auxiliary_matrix[i][j] - 1 < 28) {
+                key_pc2[i * 8 + j] = left_half_key[auxiliary_matrix[i][j] - 1];
+            }
+            else {
+                key_pc2[i * 8 + j] = right_half_key[auxiliary_matrix[i][j] - 29];
+            }
+        }
+    }
+
+    // Free Allocated Memory:
+    free_vector(left_half_key);
+    free_vector(right_half_key);
+
+    return key_pc2;
 }
