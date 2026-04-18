@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "keyschedule.h"
+#include "key_schedule.h"
 #include "utilities.h"
 
 int** permuted_choice_1(int* original_key) {
