@@ -11,26 +11,26 @@ int** permuted_choice_1(int* original_key) {
     int** two_keys = (int**) malloc(sizeof(int*) * 2);
     if (two_keys == NULL) {
         fprintf(stderr, "Error: Memory could not be allocated.\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     for (int i = 0; i < 2; i++) {
         two_keys[i] = (int*) malloc(sizeof(int) * half_key);
         if (two_keys[i] == NULL) {
             fprintf(stderr, "Error: Memory could not be allocated.\n");
-            exit(1);
+            exit(EXIT_FAILURE);
         }
     }
     // Memory Allocation: Auxiliary Matrix:
     int** matrix = (int**) malloc(sizeof(int*) * rows);
     if (matrix == NULL) {
         fprintf(stderr, "Error: Memory could not be allocated.\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     for (int i = 0; i < rows; i++) {
         matrix[i] = (int*) malloc(sizeof(int) * columns);
         if (matrix[i] == NULL) {
             fprintf(stderr, "Error: Memory could not be allocated.\n");
-            exit(1);
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -78,7 +78,7 @@ int* circular_left_shift(int* half_key, int jumps) {
     int* new_key = (int*) malloc(sizeof(int) * 28);
     if (new_key == NULL) {
         fprintf(stderr, "Error: Memory could not be allocated.\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     // Circular Left Shift
@@ -111,7 +111,7 @@ int* permuted_choice_2(int* left_half_key, int* right_half_key) {
     int* key_pc2 = (int*) malloc(sizeof(int) * 48);
     if (key_pc2 == NULL) {
         fprintf(stderr, "Error: Memory could not be allocated.\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     // Concatenation of the Left and Right:
@@ -134,13 +134,13 @@ int** key_schedule(int* original_key) {
     int** sixteen_subkeys = (int**) malloc(sizeof(int*) * 16);
     if (sixteen_subkeys == NULL) {
         fprintf(stderr, "Error: Memory could not be allocated.\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     for (int i = 0; i < 16; i++) {
         sixteen_subkeys[i] = (int*) malloc(sizeof(int) * 48);
         if (sixteen_subkeys[i] == NULL) {
             fprintf(stderr, "Error: Memory could not be allocated.\n");
-            exit(1);
+            exit(EXIT_FAILURE);
         }
     }
 
