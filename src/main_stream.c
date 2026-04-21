@@ -23,7 +23,7 @@ int* initial_permutation(int* message) {
         exit(EXIT_FAILURE);
     }
 
-    // Fill Nex Message:
+    // Fill New Message:
     for (int i = 0, j = 0, k = 0; i < 64; i++) {
         if (k > 7) {
             j++;
@@ -40,7 +40,7 @@ int* initial_permutation(int* message) {
 }
 
 int** divide_message(int* message) {
-    // Memory Allocation - Two Halfs:
+    // Memory Allocation - Two Halves:
     int** two_messages = (int**) malloc(sizeof(int*) * 2);
     if (two_messages == NULL) {
         fprintf(stderr, "Memory allocation failed\n");
@@ -65,6 +65,10 @@ int** divide_message(int* message) {
     free_vector(message);
 
     return two_messages;
+}
+
+int** feistel_scheme(int** messages) {
+    // Pass
 }
 
 int main() {
