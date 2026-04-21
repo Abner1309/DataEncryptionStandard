@@ -63,3 +63,31 @@ int* operation_xor(int* right_half, int* key) {
 
     return new_right_half;
 }
+
+int** divide_for_s_boxes(int* right_half) {
+    // Memory Allocation - Eight Messages (6 Bits):
+    int** eight_messages = (int**) malloc(sizeof(int*) * 8);
+    if (eight_messages == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    for (int i = 0; i < 8; i++) {
+        eight_messages[i] = (int*) malloc(sizeof(int) * 6);
+        if (eight_messages[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // Fill In The Eight Messages:
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 6; j++) {
+            eight_messages[i][j] = right_half[i * 6 + j];
+        }
+    }
+
+    // Free Resources:
+    free_vector(right_half);
+
+    return eight_messages;
+}
