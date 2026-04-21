@@ -91,3 +91,7 @@ int** divide_for_s_boxes(int* right_half) {
 
     return eight_messages;
 }
+
+int** operation_s_boxes(int** eight_messages) {
+    
+}
