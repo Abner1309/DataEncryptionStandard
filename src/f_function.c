@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "f_function.h"
-
 #include "utilities.h"
 
 int* expansion(int* right_half) {
@@ -36,6 +35,31 @@ int* expansion(int* right_half) {
 
     // Free Resources:
     free_vector(right_half);
+
+    return new_right_half;
+}
+
+int* operation_xor(int* right_half, int* key) {
+    // Memory Allocation - New Right Half:
+    int* new_right_half = (int*) malloc(sizeof(int) * 48);
+    if (new_right_half == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Fill New Right Half:
+    for (int i = 0; i < 48; i++) {
+        if (right_half[i] == key[i]) {
+            new_right_half[i] = 0;
+        }
+        else {
+            new_right_half[i] = 1;
+        }
+    }
+
+    // Free Resources:
+    free_vector(right_half);
+    free_vector(key);
 
     return new_right_half;
 }
