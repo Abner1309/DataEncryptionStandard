@@ -198,3 +198,26 @@ int* join_messages(int** messages) {
 
     return new_right_half;
 }
+
+int* operation_p_box(int* right_half) {
+    // P-Box:
+    int p_box[32] = {16, 7, 20, 21, 29, 12, 28, 17, 1, 15, 23, 26, 5, 18, 31, 10,
+                 2, 8, 24, 14, 32, 27, 3, 9, 19, 13, 30, 6, 22, 11, 4, 25};
+
+    // Memory Allocation - New Right Half:
+    int* new_right_half = (int*) malloc(sizeof(int) * 32);
+    if (new_right_half == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Fill New Right Half:
+    for (int i = 0; i < 32; i++) {
+        new_right_half[i] = right_half[p_box[i] - 1];
+    }
+
+    // Free Resources:
+    free_vector(right_half);
+
+    return new_right_half;
+}
