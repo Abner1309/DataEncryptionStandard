@@ -138,6 +138,29 @@ int** feistel_scheme(int** messages, int** sixteen_keys) {
     return feistel_messages;
 }
 
+int* join_message(int** messages) {
+    // Memory Allocation - Joined Message:
+    int* joined_message = (int*) malloc(sizeof(int) * 64);
+    if (joined_message == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Fill Joined Message:
+    for (int i = 0, j = 0, k = 0; i < 64; i++, k++) {
+        if (k > 31) {
+            k = 0;
+            j++;
+        }
+        joined_message[i] = messages[j][k];
+    }
+
+    // Free Resources:
+    free_matrix(messages, 2);
+
+    return joined_message;
+}
+
 int main() {
     return 0;
 }
