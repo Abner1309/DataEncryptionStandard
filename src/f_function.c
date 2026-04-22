@@ -221,3 +221,13 @@ int* operation_p_box(int* right_half) {
 
     return new_right_half;
 }
+
+int* f_function(int* right_half, int* key) {
+    int* a1 = expansion(right_half);
+    int* a2 = operation_xor(a1, key);
+    int** a3 = divide_for_s_boxes(a2);
+    int** a4 = operation_s_boxes(a3);
+    int* a5 = join_messages(a4);
+    int* a6 = operation_p_box(a5);
+    return a6;
+}

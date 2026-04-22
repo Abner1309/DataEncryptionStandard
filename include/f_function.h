@@ -59,5 +59,6 @@ int* s_box(int* chunk, int index);
 int** operation_s_boxes(int** eight_messages);
 int* join_messages(int** messages);
 int* operation_p_box(int* right_half);
+int* f_function(int* right_half, int* key);
 
 #endif //DATAENCRYPTIONSTANDARD_F_FUNCTION_H
