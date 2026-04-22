@@ -57,5 +57,6 @@ int binary_to_integer(int binary, int size);
 void integer_to_binary(int* chunk, int integer);
 int* s_box(int* chunk, int index);
 int** operation_s_boxes(int** eight_messages);
+int* join_messages(int** messages);
 
 #endif //DATAENCRYPTIONSTANDARD_F_FUNCTION_H

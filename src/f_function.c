@@ -175,3 +175,26 @@ int** operation_s_boxes(int** eight_messages) {
 
     return result;
 }
+
+int* join_messages(int** messages) {
+    // Memory Allocation - New Right Half:
+    int* new_right_half = (int*) malloc(sizeof(int) * 32);
+    if (new_right_half == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Fill New Right Half:
+    for (int i = 0, j = 0, k = 0; i < 32; i++, k++) {
+        if (k > 3) {
+            k = 0;
+            j++;
+        }
+        new_right_half[i] = messages[j][k];
+    }
+
+    // Free Resources:
+    free_matrix(messages, 8);
+
+    return new_right_half;
+}
