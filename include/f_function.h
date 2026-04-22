@@ -53,6 +53,9 @@ extern const int S_BOX_8[4][16] = {
 int* expansion(int* right_half);
 int* operation_xor(int* right_half, int* key);
 int** divide_for_s_boxes(int* right_half);
+int binary_to_integer(int binary, int size);
+void integer_to_binary(int* chunk, int integer);
+int* s_box(int* chunk, int index);
 int** operation_s_boxes(int** eight_messages);
 
 #endif //DATAENCRYPTIONSTANDARD_F_FUNCTION_H

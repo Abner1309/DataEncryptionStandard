@@ -92,6 +92,86 @@ int** divide_for_s_boxes(int* right_half) {
     return eight_messages;
 }
 
+int binary_to_integer(int binary, int size) {
+    int sum = 0;
+    for (int i = 0, current = 0, exp = 1; i < size; i++, exp = 1) {
+        current = binary % 10;
+        binary = binary / 10;
+        for (int j = 0; j < i; j++) {
+            exp = exp * 2;
+        }
+        sum = sum + current * exp;
+    }
+    return sum;
+}
+
+void integer_to_binary(int* chunk, int integer) {
+    int i = 3, quotient = integer;
+    while (quotient != 0) {
+        chunk[i] = quotient % 2;
+        quotient = quotient / 2;
+        i--;
+    }
+    while (i > -1) {
+        chunk[i] = 0;
+        i--;
+    }
+}
+
+int* s_box(int* chunk, int index) {
+    // Definition of Row Index:
+    int row_index = 0;
+    row_index = binary_to_integer(chunk[0] * 10 + chunk[5], 2);
+
+    // Definition of Column Index:
+    int column_index = 0;
+    column_index = binary_to_integer(chunk[1] * 1000 + chunk[2] * 100 + chunk[3] * 10 + chunk[4], 4);
+
+    // Memory Allocation - New Chunk:
+    int* new_chunk = (int*) malloc(sizeof(int) * 4);
+    if (new_chunk == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Find S-Box Element:
+    int element;
+    if (index == 1) { element = S_BOX_1[row_index][column_index]; }
+    else if (index == 2) { element = S_BOX_2[row_index][column_index]; }
+    else if (index == 3) { element = S_BOX_3[row_index][column_index]; }
+    else if (index == 4) { element = S_BOX_4[row_index][column_index]; }
+    else if (index == 5) { element = S_BOX_5[row_index][column_index]; }
+    else if (index == 6) { element = S_BOX_6[row_index][column_index]; }
+    else if (index == 7) { element = S_BOX_7[row_index][column_index]; }
+    else if (index == 8) { element = S_BOX_8[row_index][column_index]; }
+    else {
+        fprintf(stderr, "Invalid index\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Fill New Chunk:
+    for (int i = 0; i < 4; i++) {
+        integer_to_binary(new_chunk, element);
+    }
+
+    return new_chunk;
+}
+
 int** operation_s_boxes(int** eight_messages) {
-    
+    // Memory Allocation - Result:
+    int** result = (int**) malloc(sizeof(int) * 8);
+    if (result == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // S-Box Loop:
+    for (int i = 0; i < 8; i++) {
+        result[i] = s_box(eight_messages[i], i + 1);
+    }
+
+    // Free Resources:
+    free_matrix(eight_messages, 8);
+
+    return result;
 }
