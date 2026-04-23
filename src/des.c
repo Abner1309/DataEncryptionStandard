@@ -108,7 +108,7 @@ int* feistel_helper(int* message) {
     return helper;
 }
 
-int** feistel_scheme(int** messages, int** sixteen_keys) {
+int** feistel_scheme_encryption(int** messages, int** sixteen_keys) {
     int* lr1 = NULL;
     // Memory Allocation - Feistel Messages:
     int** feistel_messages = (int**) malloc(sizeof(int*) * 2);
@@ -123,6 +123,34 @@ int** feistel_scheme(int** messages, int** sixteen_keys) {
 
     // Feistel Function:
     for (int i = 1; i < 16; i++, lr1 = NULL) {
+        lr1 = feistel_helper(feistel_messages[0]);
+        free_vector(feistel_messages[0]);
+        feistel_messages[0] = feistel_helper(feistel_messages[1]);
+        feistel_messages[1] = operation_xor_feistel(f_function(feistel_messages[1], sixteen_keys[i]), lr1);
+    }
+
+    // Free Resources:
+    free(messages);
+    free(sixteen_keys);
+
+    return feistel_messages;
+}
+
+int** feistel_scheme_decryption(int** messages, int** sixteen_keys) {
+    int* lr1 = NULL;
+    // Memory Allocation - Feistel Messages:
+    int** feistel_messages = (int**) malloc(sizeof(int*) * 2);
+    if (feistel_messages == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Initial Arrangement:
+    feistel_messages[0] = feistel_helper(messages[1]);
+    feistel_messages[1] = operation_xor_feistel(f_function(messages[1], sixteen_keys[15]), messages[0]);
+
+    // Feistel Function:
+    for (int i = 14; i > -1; i--, lr1 = NULL) {
         lr1 = feistel_helper(feistel_messages[0]);
         free_vector(feistel_messages[0]);
         feistel_messages[0] = feistel_helper(feistel_messages[1]);
@@ -219,8 +247,8 @@ int* final_permutation(int* message) {
 
 int main() {
     // Open Files:
-    FILE* arq_input = fopen("../tests/inputs/exec1.txt", "r");
-    FILE* arq_output = fopen("../tests/outputs/exec1.txt", "w");
+    FILE* arq_input = fopen("../tests/inputs/exec2.txt", "r");
+    FILE* arq_output = fopen("../tests/outputs/exec2.txt", "w");
     if (arq_input == NULL || arq_output == NULL) {
         printf("Error When Opening Files");
         return 1;
@@ -262,8 +290,8 @@ int main() {
     int** a1 = key_schedule(key);
     int* a2 = initial_permutation(message);
     int** a3 = divide_message(a2);
-    int** a4 = feistel_scheme(a3, a1);
-    int* a5 = join_message_des(a4);
+    int** a4 = feistel_scheme_decryption(a3, a1);
+    int* a5 = join_message_des_inverted(a4);
     int* a6 = final_permutation(a5);
 
     // Write Answer:
