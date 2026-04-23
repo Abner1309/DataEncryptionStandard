@@ -17,13 +17,12 @@ The execution flow is described below:
 Enter the path to the input file: ../tests/inputs/exec1_enc.txt
 Enter the path to the output file: ../tests/outputs/exec1_enc.txt
 ```
-2. Both the input and output files must follow a specific format.
+2. Both the input and output files must follow a specific format (Use "enc" for encryption and "dec" for decryption).
 ```
 [enc/dec]
 [key = 56 bits]
 [message = 64 bits]
 ```
-Use "enc" for encryption and "dec" for decryption.
 3. After following these steps, the code will generate the corresponding output.
 
 ## 🎯 Tests:
