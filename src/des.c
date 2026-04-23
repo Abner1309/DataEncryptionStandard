@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "f_function.h"
 #include "key_schedule.h"
 #include "des.h"
@@ -34,9 +35,6 @@ int* initial_permutation(int* message) {
         new_message[i] = message[auxiliary_matrix[j][k] - 1];
         k++;
     }
-
-    // Free Resources:
-    free_vector(message);
 
     return new_message;
 }
@@ -113,7 +111,7 @@ int* feistel_helper(int* message) {
 int** feistel_scheme(int** messages, int** sixteen_keys) {
     int* lr1 = NULL;
     // Memory Allocation - Feistel Messages:
-    int** feistel_messages = (int**) malloc(sizeof(int) * 2);
+    int** feistel_messages = (int**) malloc(sizeof(int*) * 2);
     if (feistel_messages == NULL) {
         fprintf(stderr, "Memory allocation failed\n");
         exit(EXIT_FAILURE);
@@ -138,7 +136,7 @@ int** feistel_scheme(int** messages, int** sixteen_keys) {
     return feistel_messages;
 }
 
-int* join_message(int** messages) {
+int* join_message_des(int** messages) {
     // Memory Allocation - Joined Message:
     int* joined_message = (int*) malloc(sizeof(int) * 64);
     if (joined_message == NULL) {
@@ -151,6 +149,29 @@ int* join_message(int** messages) {
         if (k > 31) {
             k = 0;
             j++;
+        }
+        joined_message[i] = messages[j][k];
+    }
+
+    // Free Resources:
+    free_matrix(messages, 2);
+
+    return joined_message;
+}
+
+int* join_message_des_inverted(int** messages) {
+    // Memory Allocation - Joined Message:
+    int* joined_message = (int*) malloc(sizeof(int) * 64);
+    if (joined_message == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Fill Joined Message:
+    for (int i = 0, j = 1, k = 0; i < 64; i++, k++) {
+        if (k > 31) {
+            k = 0;
+            j--;
         }
         joined_message[i] = messages[j][k];
     }
@@ -192,10 +213,67 @@ int* final_permutation(int* message) {
 
     // Free Resources:
     free(message);
-    
+
     return encrypted_text;
 }
 
 int main() {
+    // Open Files:
+    FILE* arq_input = fopen("../tests/inputs/exec1.txt", "r");
+    FILE* arq_output = fopen("../tests/outputs/exec1.txt", "w");
+    if (arq_input == NULL || arq_output == NULL) {
+        printf("Error When Opening Files");
+        return 1;
+    }
+
+    // Read Key and Message:
+    int key[56];
+    int message[64];
+    int c = 0, i = 0;
+    while (i < 56 && (c = fgetc(arq_input)) != EOF) {
+        if (c == '0' || c == '1') {
+            key[i] = c - '0';
+            i++;
+        }
+        else if (c == '\n' || c == '\r' || c == ' ') {
+            continue;
+        }
+        else {
+            fprintf(stderr, "Error: Invalid character found: %c\n", c);
+            exit(EXIT_FAILURE);
+        }
+    }
+    c = 0; i = 0;
+    while (i < 64 && (c = fgetc(arq_input)) != EOF) {
+        if (c == '0' || c == '1') {
+            message[i] = c - '0';
+            i++;
+        }
+        else if (c == '\n' || c == '\r' || c == ' ') {
+            continue;
+        }
+        else {
+            fprintf(stderr, "Error: Invalid character found: %c\n", c);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // Data Encryption Standard:
+    int** a1 = key_schedule(key);
+    int* a2 = initial_permutation(message);
+    int** a3 = divide_message(a2);
+    int** a4 = feistel_scheme(a3, a1);
+    int* a5 = join_message_des(a4);
+    int* a6 = final_permutation(a5);
+
+    // Write Answer:
+    for (int i = 0; i < 64; i++) {
+        fprintf(arq_output, "%d", a6[i]);
+    }
+
+    // Free Resources:
+    free_vector(a6);
+    fclose(arq_input);
+    fclose(arq_output);
     return 0;
 }

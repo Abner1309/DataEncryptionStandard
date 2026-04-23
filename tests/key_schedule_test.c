@@ -3,7 +3,7 @@
 #include <assert.h>
 #include "key_schedule.h"
 
-int main() {
+int test() {
     // Create a String to Storage a Big Number:
     char* number = malloc(sizeof(char) * 57);
     // Accept only 56 bits:

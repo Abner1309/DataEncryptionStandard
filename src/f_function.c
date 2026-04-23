@@ -150,16 +150,14 @@ int* s_box(int* chunk, int index) {
     }
 
     // Fill New Chunk:
-    for (int i = 0; i < 4; i++) {
-        integer_to_binary(new_chunk, element);
-    }
+    integer_to_binary(new_chunk, element);
 
     return new_chunk;
 }
 
 int** operation_s_boxes(int** eight_messages) {
     // Memory Allocation - Result:
-    int** result = (int**) malloc(sizeof(int) * 8);
+    int** result = (int**) malloc(sizeof(int*) * 8);
     if (result == NULL) {
         fprintf(stderr, "Memory allocation failed\n");
         exit(EXIT_FAILURE);
