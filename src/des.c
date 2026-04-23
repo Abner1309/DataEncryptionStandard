@@ -246,18 +246,43 @@ int* final_permutation(int* message) {
 }
 
 int main() {
+    // Ask For Files:
+    char input_file_path[512];
+    char output_file_path[512];
+    printf("Enter the path to the input file: ");
+    fgets(input_file_path, sizeof(input_file_path), stdin);
+    input_file_path[strcspn(input_file_path, "\n")] = '\0';
+    printf("Enter the path to the output file: ");
+    fgets(output_file_path, sizeof(output_file_path), stdin);
+    output_file_path[strcspn(output_file_path, "\n")] = '\0';
+
     // Open Files:
-    FILE* arq_input = fopen("../tests/inputs/exec2.txt", "r");
-    FILE* arq_output = fopen("../tests/outputs/exec2.txt", "w");
+    FILE* arq_input = fopen(input_file_path, "r");
+    FILE* arq_output = fopen(output_file_path, "w");
     if (arq_input == NULL || arq_output == NULL) {
         printf("Error When Opening Files");
         return 1;
     }
 
-    // Read Key and Message:
+    // Read Mode, Key and Message:
+    char mode[4];
     int key[56];
     int message[64];
     int c = 0, i = 0;
+    while (i < 3 && (c = fgetc(arq_input)) != EOF) {
+        if (c == 'e' || c == 'n' || c == 'c' || c == 'd') {
+            mode[i] = (char) c;
+            i++;
+        }
+        else if (c == '\n' || c == '\r' || c == ' ') {
+            continue;
+        }
+        else {
+            fprintf(stderr, "Error: Invalid character found: %c\n", c);
+            exit(EXIT_FAILURE);
+        }
+    }
+    i = 0;
     while (i < 56 && (c = fgetc(arq_input)) != EOF) {
         if (c == '0' || c == '1') {
             key[i] = c - '0';
@@ -271,7 +296,7 @@ int main() {
             exit(EXIT_FAILURE);
         }
     }
-    c = 0; i = 0;
+    i = 0;
     while (i < 64 && (c = fgetc(arq_input)) != EOF) {
         if (c == '0' || c == '1') {
             message[i] = c - '0';
@@ -286,21 +311,49 @@ int main() {
         }
     }
 
-    // Data Encryption Standard:
-    int** a1 = key_schedule(key);
-    int* a2 = initial_permutation(message);
-    int** a3 = divide_message(a2);
-    int** a4 = feistel_scheme_decryption(a3, a1);
-    int* a5 = join_message_des_inverted(a4);
-    int* a6 = final_permutation(a5);
+    // Data Encryption Standard - Encryption:
+    if (strcmp(mode, "enc") == 0) {
+        int** a1 = key_schedule(key);
+        int* a2 = initial_permutation(message);
+        int** a3 = divide_message(a2);
+        int** a4 = feistel_scheme_encryption(a3, a1);
+        int* a5 = join_message_des_inverted(a4);
+        int* a6 = final_permutation(a5);
 
-    // Write Answer:
-    for (int i = 0; i < 64; i++) {
-        fprintf(arq_output, "%d", a6[i]);
+        // Write Answer:
+        fprintf(arq_output, "Ciphertext: ");
+        for (int x = 0; x < 64; x++) {
+            fprintf(arq_output, "%d", a6[x]);
+        }
+
+        // Free Resources:
+        free_vector(a6);
+    }
+    // Data Encryption Standard - Decryption:
+    else if (strcmp(mode, "dec") == 0) {
+        int** a1 = key_schedule(key);
+        int* a2 = initial_permutation(message);
+        int** a3 = divide_message(a2);
+        int** a4 = feistel_scheme_decryption(a3, a1);
+        int* a5 = join_message_des_inverted(a4);
+        int* a6 = final_permutation(a5);
+
+        // Write Answer:
+        fprintf(arq_output, "Original Text: ");
+        for (int x = 0; x < 64; x++) {
+            fprintf(arq_output, "%d", a6[x]);
+        }
+
+        // Free Resources:
+        free_vector(a6);
+    }
+    // Error!
+    else {
+        printf("The operation mode should be 'enc' or 'dec'\n");
+        exit(EXIT_FAILURE);
     }
 
     // Free Resources:
-    free_vector(a6);
     fclose(arq_input);
     fclose(arq_output);
     return 0;
