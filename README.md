@@ -25,6 +25,9 @@ Enter the path to the output file: ../tests/outputs/exec1_enc.txt
 ```
 3. After following these steps, the code will generate the corresponding output.
 
+## 🧠 Core Documentation:
+This algorithm follows the steps described in the document “FIPS SUB 46-3” located in the “doc” folder.
+
 ## 🎯 Tests:
 All the encrypted messages were successfully deciphered without altering the original text.
 
