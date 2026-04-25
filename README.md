@@ -28,6 +28,11 @@ Enter the path to the output file: ../tests/outputs/exec1_enc.txt
 ## 🎯 Tests:
 All the encrypted messages were successfully deciphered without altering the original text.
 
+## 🧐 Valgrind:
+Valgrind did not detect any errors.
+
+![Valgrind Screen](img/valgrind.webp)
+
 ## 🔏 Security:
 DES (Data Encryption Standard) is no longer secure, primarily due to advances in computing power, which have rendered its key size obsolete.
 
