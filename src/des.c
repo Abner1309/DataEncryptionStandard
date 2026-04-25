@@ -265,9 +265,9 @@ int main() {
     }
 
     // Read Mode, Key and Message:
-    char mode[4];
-    int key[56];
-    int message[64];
+    char mode[4] = "";
+    int key[56] = {0};
+    int message[64] = {0};
     int c = 0, i = 0;
     while (i < 3 && (c = fgetc(arq_input)) != EOF) {
         if (c == 'e' || c == 'n' || c == 'c' || c == 'd') {
