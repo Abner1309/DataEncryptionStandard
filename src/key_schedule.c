@@ -136,13 +136,6 @@ int** key_schedule(int* original_key) {
         fprintf(stderr, "Error: Memory could not be allocated.\n");
         exit(EXIT_FAILURE);
     }
-    for (int i = 0; i < 16; i++) {
-        sixteen_subkeys[i] = (int*) malloc(sizeof(int) * 48);
-        if (sixteen_subkeys[i] == NULL) {
-            fprintf(stderr, "Error: Memory could not be allocated.\n");
-            exit(EXIT_FAILURE);
-        }
-    }
 
     // Call Permuted Choice 1:
     int** left_right_parts = permuted_choice_1(original_key);
