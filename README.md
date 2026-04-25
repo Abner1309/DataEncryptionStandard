@@ -28,6 +28,12 @@ Enter the path to the output file: ../tests/outputs/exec1_enc.txt
 ## 🎯 Tests:
 All the encrypted messages were successfully deciphered without altering the original text.
 
+## 🧾 Example:
+The images below illustrate an example of encryption and decryption.
+
+![Example1 - Encryption](img/example1-enc.webp)
+![Example1 - Decryption](img/example1-dec.webp)
+
 ## 🧐 Valgrind:
 Valgrind did not detect any errors.
 
